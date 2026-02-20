@@ -47,7 +47,7 @@ class ReplayBuffer:
         return len(self.buffer)
     
     
-class LunarLanderDQNAgent:
+class LunarLanderDDQNAgent:
         
     def __init__(
             self,
@@ -107,8 +107,10 @@ class LunarLanderDQNAgent:
             dones =  dones.unsqueeze(1).to(self.device)
 
             with torch.no_grad():
+                #DDQN 
 
-                future_q_values = self.target_network(next_observations).max(1,keepdim=True)[0]
+                best_actions = self.qpolicy_network(next_observations).argmax(dim=1, keepdim=True)
+                future_q_values = self.target_network(next_observations).gather(1, best_actions)
                 target_q_values = rewards + (self.discount_factor*future_q_values*(1-dones))
 
             q_values = self.qpolicy_network(observations).gather(1, actions)
@@ -116,6 +118,7 @@ class LunarLanderDQNAgent:
 
             self.optimizer.zero_grad()
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.qpolicy_network.parameters(), max_norm=1.0)
             self.optimizer.step()
 
             self.steps += 1

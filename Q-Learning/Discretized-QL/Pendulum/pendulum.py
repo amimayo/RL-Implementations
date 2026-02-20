@@ -1,13 +1,13 @@
 import gymnasium as gym
-from agent import CartpoleAgent
+from agent import PendulumAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
 
 #Environment
 
-train_env = gym.make("CartPole-v1")
-test_env = gym.make("CartPole-v1", render_mode="human")
+train_env = gym.make("Pendulum-v1")
+test_env = gym.make("Pendulum-v1", render_mode="human")
 
 #Parameters
 
@@ -18,12 +18,12 @@ initial_epsilon = 1
 epsilon_decay = (initial_epsilon)/(train_episodes/2)
 final_epsilon = 0.005
 discount_factor = 0.99
-n_bins = (10,10,10,10)
+n_bins = (10,10,10)
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env, buffer_length=train_episodes)
 
-#CartPole Q-Learning Agent
+#Pendulum Q-Learning Agent
 
-agent = CartpoleAgent(
+agent = PendulumAgent(
     env=train_env,
     learning_rate=learning_rate,
     initial_epsilon=initial_epsilon,

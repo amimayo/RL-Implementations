@@ -1,6 +1,6 @@
 import gymnasium as gym
 import torch
-from agent import LunarLanderDQNAgent
+from agent import LunarLanderDDQNAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,19 +17,19 @@ test_episodes = 10
 learning_rate = 0.001
 initial_epsilon = 1
 final_epsilon = 0.01
-epsilon_decay = (initial_epsilon-final_epsilon)/(train_episodes/3)
+epsilon_decay = (initial_epsilon-final_epsilon)/(train_episodes)
 discount_factor = 0.99
 hidden_dims = 128
 buffer_size = 100000
 batch_size = 64
-update_target_freq = 1500
+update_target_freq = 5000
 warmup_steps = 1000
 
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env,buffer_length=train_episodes)
 
-#LunarLander Deep-Q-Learning Agent
+#LunarLander Double Deep-Q-Learning Agent
 
-agent = LunarLanderDQNAgent(
+agent = LunarLanderDDQNAgent(
     env=train_env,
     learning_rate=learning_rate,
     initial_epsilon=initial_epsilon,
@@ -53,6 +53,6 @@ test(test_episodes=test_episodes,env=test_env,agent=trained_agent)
 test_env.close()
 
  #Saving model
-torch.save(agent.qpolicy_network.state_dict(), "lunarlander_single_dqn_model.pth")
-print("LunarLander DQN Model saved successfully.")
+torch.save(agent.qpolicy_network.state_dict(), "lunarlander_single_ddqn_model.pth")
+print("LunarLander DDQN Model saved successfully.")
 

@@ -1,5 +1,5 @@
 import gymnasium as gym
-from agent import TaxiAgent
+from agent import TaxiSARSAAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("Taxi-v3")
-test_env = gym.make("Taxi-v3")
+test_env = gym.make("Taxi-v3", render_mode="human")
 
 #Parameters
 
@@ -20,9 +20,9 @@ final_epsilon = 0.005
 discount_factor = 0.99
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env, buffer_length=train_episodes)
 
-#FrozenLake Q-Learning Agent
+#Taxi SARSA Agent
 
-agent = TaxiAgent(
+agent = TaxiSARSAAgent(
     env=train_env,
     learning_rate=learning_rate,
     initial_epsilon=initial_epsilon,
@@ -35,9 +35,6 @@ agent = TaxiAgent(
 print("Training...")
 trained_agent = train(train_episodes=train_episodes,env=train_env,agent=agent)
 train_env.close()
-# for state in range(train_env.observation_space.n):
-#     print(f"State {state}: {agent.q_values[state]}")
-
 
 #Testing
 print("Testing...")

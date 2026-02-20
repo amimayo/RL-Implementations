@@ -7,22 +7,22 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("MountainCar-v0")
-test_env = gym.make("MountainCar-v0")
+test_env = gym.make("MountainCar-v0", render_mode="human")
 
 #Parameters
 
 train_episodes = 1000
 test_episodes = 10
-learning_rate = 0.1
+n_tilings = 8
+learning_rate = 0.1/n_tilings
 initial_epsilon = 1
 epsilon_decay = (initial_epsilon)/(train_episodes/2)
 final_epsilon = 0.005
 discount_factor = 0.99
 n_bins = (10,10)
-n_tilings = 8
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env, buffer_length=train_episodes)
 
-#FrozenLake Q-Learning Agent
+#MountainCar Q-Learning Agent
 
 agent = MountainCarAgent(
     env=train_env,

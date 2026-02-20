@@ -5,19 +5,29 @@ import random
 import numpy as np
 
 
-class DQN(nn.Module):
+# class DQN(nn.Module):
 
-    def __init__(self, observation_dims, action_dims, hidden_dims):
+#     def __init__(self, observation_dims, action_dims, hidden_dims):
+#         super().__init__()
+#         self.layer1 = nn.Linear(observation_dims,hidden_dims)
+#         self.layer2 = nn.Linear(hidden_dims,hidden_dims)
+#         self.layer3 = nn.Linear(hidden_dims,action_dims)
+#         self.relu = nn.ReLU()
+
+#     def forward(self,x):
+#         x = self.relu(self.layer1(x))
+#         x = self.relu(self.layer2(x))
+#         return self.layer3(x)
+
+#Todo
+
+class CNN(nn.Module):
+
+    def __init__(self):
         super().__init__()
-        self.layer1 = nn.Linear(observation_dims,hidden_dims)
-        self.layer2 = nn.Linear(hidden_dims,hidden_dims)
-        self.layer3 = nn.Linear(hidden_dims,action_dims)
-        self.relu = nn.ReLU()
 
-    def forward(self,x):
-        x = self.relu(self.layer1(x))
-        x = self.relu(self.layer2(x))
-        return self.layer3(x)
+    def forward(self, x):
+        return 
     
 
 class ReplayBuffer:
@@ -47,7 +57,7 @@ class ReplayBuffer:
         return len(self.buffer)
     
     
-class LunarLanderDQNAgent:
+class PongDDQNAgent:
         
     def __init__(
             self,
@@ -69,8 +79,8 @@ class LunarLanderDQNAgent:
         self.action_dims = env.action_space.n
 
         self.buffer = ReplayBuffer(buffer_size)
-        self.qpolicy_network = DQN(self.observation_dims,self.action_dims,hidden_dims).to(self.device)
-        self.target_network = DQN(self.observation_dims,self.action_dims,hidden_dims).to(self.device)
+        self.qpolicy_network = CNN(self.observation_dims,self.action_dims,hidden_dims).to(self.device)
+        self.target_network = CNN(self.observation_dims,self.action_dims,hidden_dims).to(self.device)
         self.target_network.load_state_dict(self.qpolicy_network.state_dict())
         self.optimizer = torch.optim.Adam(params=self.qpolicy_network.parameters(),lr=learning_rate)
         self.target_network.eval()
@@ -108,14 +118,18 @@ class LunarLanderDQNAgent:
 
             with torch.no_grad():
 
-                future_q_values = self.target_network(next_observations).max(1,keepdim=True)[0]
+                #DDQN
+
+                best_actions = self.qpolicy_network(next_observations).argmax(dim=1, keepdim=True)
+                future_q_values = self.target_network(next_observations).gather(1, best_actions)
                 target_q_values = rewards + (self.discount_factor*future_q_values*(1-dones))
 
             q_values = self.qpolicy_network(observations).gather(1, actions)
-            loss = nn.MSELoss()(q_values,target_q_values)
+            loss = nn.MSELoss(q_values,target_q_values)
 
             self.optimizer.zero_grad()
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.qpolicy_network.parameters(), max_norm=1.0)
             self.optimizer.step()
 
             self.steps += 1

@@ -2,39 +2,34 @@ import gymnasium as gym
 import numpy as np
 from tqdm import tqdm
 
-def train(train_episodes, env, agent):
+#Todo
 
+def train(train_steps, env, agent):
 
-    for episode in tqdm(range(train_episodes)):
+    num_envs = env.num_envs
+    observations, infos = env.reset()
 
-        episode_over = False
-        observation, info = env.reset()
+    for step in tqdm(range(train_steps)):
 
-        while not episode_over:
+            actions = agent.get_actions(observations)
 
-            action = agent.get_action(observation)
+            next_observations, rewards, terminateds, truncateds, infos = env.step(actions)
 
-            next_observation, reward, terminated, truncated, info = env.step(action)
+            episode_overs = np.logical_or(terminateds, truncateds)
 
-            agent.update(
-                observation = observation,
-                action = action,
-                reward = reward,
-                terminated = terminated,
-                next_observation = next_observation
-            )
+            agent.store_experience(observations,actions,rewards,next_observations,episode_overs)
+            
+            agent.update()
 
-            episode_over = terminated or truncated
-            observation = next_observation
+            agent.e_decay()
 
-        agent.e_decay()
+            observations = next_observations
 
     return agent
 
 def test(test_episodes, env, agent):
 
     total_rewards = []
-    success_rides = 0
     old_epsilon = agent.epsilon
     agent.epsilon = 0
 
@@ -42,6 +37,7 @@ def test(test_episodes, env, agent):
 
         observation, info = env.reset()
         episode_reward = 0
+        successes = 0
         episode_over = False
 
         while not episode_over:
@@ -49,8 +45,10 @@ def test(test_episodes, env, agent):
             action = agent.get_action(observation)
             observation, reward, terminated, truncated, info = env.step(action)
             # env.render()
-            if reward == 20:
-                success_rides += 1
+
+            if reward > 200:
+                successes += 1
+
             episode_reward += reward
 
             episode_over = terminated or truncated
@@ -59,17 +57,14 @@ def test(test_episodes, env, agent):
 
     agent.epsilon = old_epsilon
 
+    success_rate = np.mean(np.array(total_rewards) > 200)
     average_reward = np.mean(total_rewards)
 
     print("==============================================")
     print(f"Test results over {test_episodes} episodes :")
-    print(f"Successful Rides : {success_rides}")
-    print(f"Unsuccessful Rides : {test_episodes - success_rides}")
+    print(f"Success Rate : {success_rate:.1%}")
+    print(f"Fail Rate : {(1-success_rate):.1%}")
+    print(f"Successful Landings : {successes}")
+    print(f"Unsuccessful Episodes : {test_episodes - successes}")
     print(f"Average Reward : {average_reward:.3f}")
     print("==============================================")
-
-
-
-
-
-

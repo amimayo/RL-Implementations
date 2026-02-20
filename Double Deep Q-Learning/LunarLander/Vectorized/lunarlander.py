@@ -1,6 +1,6 @@
 import gymnasium as gym
 import torch
-from agent import LunarLanderDQNAgent
+from agent import LunarLanderDDQNAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,9 +31,9 @@ def main():
 
     # train_env = gym.wrappers.RecordEpisodeStatistics(train_env,buffer_length=train_episodes)
 
-    #LunarLander Deep-Q-Learning Agent
+    #LunarLander Double Deep-Q-Learning Agent
 
-    agent = LunarLanderDQNAgent(
+    agent = LunarLanderDDQNAgent(
         env=train_env,
         learning_rate=learning_rate,
         initial_epsilon=initial_epsilon,
@@ -58,8 +58,8 @@ def main():
     test_env.close()
 
     #Saving model
-    torch.save(agent.qpolicy_network.state_dict(), "lunarlander_vec_dqn_model.pth")
-    print("LunarLander DQN Model saved successfully.")
+    torch.save(agent.qpolicy_network.state_dict(), "lunarlander_vec_ddqn_model.pth")
+    print("LunarLander DDQN Model saved successfully.")
 
 if __name__ == "__main__":
     import multiprocessing

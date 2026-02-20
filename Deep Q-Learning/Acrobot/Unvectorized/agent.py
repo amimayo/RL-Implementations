@@ -47,7 +47,7 @@ class ReplayBuffer:
         return len(self.buffer)
     
     
-class LunarLanderDQNAgent:
+class AcrobotDQNAgent:
         
     def __init__(
             self,

@@ -30,13 +30,14 @@ def test(test_episodes, env, agent):
     total_rewards = []
     old_epsilon = agent.epsilon
     agent.epsilon = 0
+    successes = 0
 
     for episode in tqdm(range(test_episodes)):
 
         observation, info = env.reset()
         episode_reward = 0
-        successes = 0
         episode_over = False
+        successes = 0
 
         while not episode_over:
 
@@ -47,15 +48,15 @@ def test(test_episodes, env, agent):
             episode_reward += reward
 
             episode_over = terminated or truncated
-
-        if episode_reward > 200:
-                successes += 1
             
         total_rewards.append(episode_reward)
 
+        if episode_reward > -100:
+                successes += 1
+
     agent.epsilon = old_epsilon
 
-    success_rate = np.mean(np.array(total_rewards) > 200)
+    success_rate = np.mean(np.array(total_rewards) > -100)
     average_reward = np.mean(total_rewards)
 
     print("==============================================")

@@ -1,14 +1,14 @@
 import gymnasium as gym
 import torch
-from agent import LunarLanderDQNAgent
+from agent import AcrobotDQNAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
 
 #Environment
 
-train_env = gym.make("LunarLander-v3")
-test_env = gym.make("LunarLander-v3")
+train_env = gym.make("Acrobot-v1")
+test_env = gym.make("Acrobot-v1", render_mode="human")
 
 #Parameters
 
@@ -27,9 +27,9 @@ warmup_steps = 1000
 
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env,buffer_length=train_episodes)
 
-#LunarLander Deep-Q-Learning Agent
+#Acrobot Deep-Q-Learning Agent
 
-agent = LunarLanderDQNAgent(
+agent = AcrobotDQNAgent(
     env=train_env,
     learning_rate=learning_rate,
     initial_epsilon=initial_epsilon,
@@ -53,6 +53,6 @@ test(test_episodes=test_episodes,env=test_env,agent=trained_agent)
 test_env.close()
 
  #Saving model
-torch.save(agent.qpolicy_network.state_dict(), "lunarlander_single_dqn_model.pth")
-print("LunarLander DQN Model saved successfully.")
+torch.save(agent.qpolicy_network.state_dict(), "acrobot_single_dqn_model.pth")
+print("Acrobot DQN Model saved successfully.")
 

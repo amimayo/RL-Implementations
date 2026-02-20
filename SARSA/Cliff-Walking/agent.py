@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 from collections import defaultdict
 
-class TaxiAgent:
+class CliffWalkingSARSAAgent:
 
     def __init__(
             self,
@@ -41,10 +41,11 @@ class TaxiAgent:
             action : int,
             reward : float,
             terminated : bool,
-            next_observation : int
+            next_observation : int,
+            next_action : int
     ):
         
-        future_q_value = (not terminated)*np.max((self.q_values[next_observation]))
+        future_q_value = (not terminated)*(self.q_values[next_observation][next_action])
 
         target = reward + self.discount_factor*(future_q_value)
 

@@ -1,17 +1,20 @@
 import gymnasium as gym
+import ale_py
 import torch
-from agent import LunarLanderDQNAgent
+from agent import PongDDQNAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
+
+#Todo
 
 def main():
 
     #Environment
 
     num_envs = 8
-    train_env = gym.make_vec("LunarLander-v3",num_envs=num_envs,vectorization_mode="async")
-    test_env = gym.make("LunarLander-v3")
+    train_env = gym.make_vec("ALE/Pong-v5",num_envs=num_envs,vectorization_mode="async")
+    test_env = gym.make("ALE/Pong-v5")
 
     #Parameters
 
@@ -29,11 +32,9 @@ def main():
     update_target_freq = 5000
     warmup_steps = 10000
 
-    # train_env = gym.wrappers.RecordEpisodeStatistics(train_env,buffer_length=train_episodes)
+    # Pong Double Deep-Q-Learning Agent
 
-    #LunarLander Deep-Q-Learning Agent
-
-    agent = LunarLanderDQNAgent(
+    agent = PongDDQNAgent(
         env=train_env,
         learning_rate=learning_rate,
         initial_epsilon=initial_epsilon,
@@ -58,8 +59,8 @@ def main():
     test_env.close()
 
     #Saving model
-    torch.save(agent.qpolicy_network.state_dict(), "lunarlander_vec_dqn_model.pth")
-    print("LunarLander DQN Model saved successfully.")
+    torch.save(agent.qpolicy_network.state_dict(), "pong_vec_ddqn_model.pth")
+    print("Pong DDQN Model saved successfully.")
 
 if __name__ == "__main__":
     import multiprocessing

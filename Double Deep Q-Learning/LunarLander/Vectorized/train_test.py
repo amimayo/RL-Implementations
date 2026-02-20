@@ -30,12 +30,12 @@ def test(test_episodes, env, agent):
     total_rewards = []
     old_epsilon = agent.epsilon
     agent.epsilon = 0
+    successes = 0
 
     for episode in tqdm(range(test_episodes)):
 
         observation, info = env.reset()
         episode_reward = 0
-        successes = 0
         episode_over = False
 
         while not episode_over:
@@ -45,6 +45,7 @@ def test(test_episodes, env, agent):
             # env.render()
 
             episode_reward += reward
+            
 
             episode_over = terminated or truncated
 

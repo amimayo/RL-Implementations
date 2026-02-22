@@ -4,31 +4,33 @@ from collections import deque
 import random
 import numpy as np
 
+class CNN(nn.Module):  #Input : (Batch, 4, 84, 84) (Grayscale)
 
-# class DQN(nn.Module):
-
-#     def __init__(self, observation_dims, action_dims, hidden_dims):
-#         super().__init__()
-#         self.layer1 = nn.Linear(observation_dims,hidden_dims)
-#         self.layer2 = nn.Linear(hidden_dims,hidden_dims)
-#         self.layer3 = nn.Linear(hidden_dims,action_dims)
-#         self.relu = nn.ReLU()
-
-#     def forward(self,x):
-#         x = self.relu(self.layer1(x))
-#         x = self.relu(self.layer2(x))
-#         return self.layer3(x)
-
-#Todo
-
-class CNN(nn.Module):
-
-    def __init__(self):
+    def __init__(self, action_dims):
         super().__init__()
 
+        self.feature_layers = nn.Sequential(
+            nn.Conv2d(4, 32, kernel_size=8, stride=4),
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1),
+            nn.ReLU()
+        )
+
+        self.fc_layers = nn.Sequential(
+            nn.Linear(64*7*7, 512),
+            nn.ReLU(),
+            nn.Linear(512, action_dims)
+        )
+
     def forward(self, x):
-        return 
-    
+
+        x = x/255
+        x = self.feature_layers(x)
+        x = x.reshape(x.size(0), -1)
+
+        return self.fc_layers(x)   
 
 class ReplayBuffer:
 
@@ -38,7 +40,7 @@ class ReplayBuffer:
     def push(self,observations,actions,rewards,next_observations,dones):
         
         for observation,action,reward,next_observation,done in zip(observations,actions,rewards,next_observations,dones):
-            self.buffer.append((observation,action,reward,next_observation,done)) 
+            self.buffer.append((np.array(observation, dtype=np.uint8),action,reward,np.array(next_observation, dtype=np.uint8),done)) 
 
     def sample_experiences(self,batch_size):
         batch = random.sample(self.buffer,batch_size)
@@ -47,10 +49,10 @@ class ReplayBuffer:
 
         return (
 
-            torch.FloatTensor(observations),
+            torch.ByteTensor(observations),
             torch.LongTensor(actions),
             torch.FloatTensor(rewards),
-            torch.FloatTensor(next_observations),
+            torch.ByteTensor(next_observations),
             torch.FloatTensor(dones)
 
         )
@@ -83,8 +85,8 @@ class PongDDQNAgent:
         self.action_dims = env.single_action_space.n
 
         self.buffer = ReplayBuffer(buffer_size)
-        self.qpolicy_network = CNN(self.observation_dims,self.action_dims,hidden_dims).to(self.device)
-        self.target_network = CNN(self.observation_dims,self.action_dims,hidden_dims).to(self.device)
+        self.qpolicy_network = CNN(self.action_dims).to(self.device)
+        self.target_network = CNN(self.action_dims).to(self.device)
         self.target_network.load_state_dict(self.qpolicy_network.state_dict())
         self.optimizer = torch.optim.Adam(params=self.qpolicy_network.parameters(),lr=learning_rate)
         self.target_network.eval()
@@ -104,8 +106,8 @@ class PongDDQNAgent:
             return np.array([self.env.single_action_space.sample() for _ in range(self.num_envs)])
         else:
             with torch.no_grad():
-                observations = torch.FloatTensor(observations).to(self.device)
-                q_values = self.qpolicy_network(observations)
+                observations = torch.FloatTensor(np.array(observations)).to(self.device)
+                q_values = self.qpolicy_network(observations.float())
             return torch.argmax(q_values,dim=1).cpu().numpy()
         
     def get_action(self, observation):
@@ -123,10 +125,10 @@ class PongDDQNAgent:
         
         observations,actions,rewards,next_observations,dones = self.buffer.sample_experiences(self.batch_size)
 
-        observations = observations.to(self.device)
+        observations = observations.to(self.device).float()
         actions = actions.unsqueeze(1).to(self.device)
         rewards = rewards.unsqueeze(1).to(self.device)
-        next_observations = next_observations.to(self.device)
+        next_observations = next_observations.to(self.device).float()
         dones =  dones.unsqueeze(1).to(self.device)
 
         with torch.no_grad():
@@ -138,7 +140,7 @@ class PongDDQNAgent:
             target_q_values = rewards + (self.discount_factor*future_q_values*(1-dones))
 
         q_values = self.qpolicy_network(observations).gather(1, actions)
-        loss = nn.MSELoss()(q_values,target_q_values)
+        loss = nn.SmoothL1Loss()(q_values,target_q_values) #SmoothL1/Huber Loss
         
         self.optimizer.zero_grad()
         loss.backward()

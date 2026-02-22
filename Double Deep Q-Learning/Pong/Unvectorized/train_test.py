@@ -2,8 +2,6 @@ import gymnasium as gym
 import numpy as np
 from tqdm import tqdm
 
-#Todo
-
 def train(train_episodes, env, agent,warmup_steps):
 
     observation,info = env.reset()
@@ -63,7 +61,7 @@ def test(test_episodes, env, agent):
             episode_over = terminated or truncated
             
         total_rewards.append(episode_reward)
-        if episode_reward > 200:
+        if episode_reward > 0:
             successes += 1
 
     agent.epsilon = old_epsilon
@@ -75,7 +73,7 @@ def test(test_episodes, env, agent):
     print(f"Test results over {test_episodes} episodes :")
     print(f"Success Rate : {success_rate:.1%}")
     print(f"Fail Rate : {(1-success_rate):.1%}")
-    print(f"Successful Landings : {successes}")
+    print(f"Successes : {successes}")
     print(f"Unsuccessful Episodes : {test_episodes - successes}")
     print(f"Average Reward : {average_reward:.3f}")
     print("==============================================")

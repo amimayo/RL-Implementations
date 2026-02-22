@@ -2,13 +2,22 @@ import gymnasium as gym
 import numpy as np
 from tqdm import tqdm
 
-#Todo
-
-def train(train_steps, env, agent):
+def train(train_steps,  warmup_steps, env, agent):
 
     num_envs = env.num_envs
     observations, infos = env.reset()
 
+    print("Warmup...") #Warmup
+    while len(agent.buffer) < warmup_steps:
+      
+        actions = np.array([env.single_action_space.sample() for _ in range(num_envs)])
+        next_observations, rewards, terminateds, truncateds, _ = env.step(actions)
+        episode_overs = np.logical_or(terminateds, truncateds)
+        agent.store_experience(observations, actions, rewards, next_observations, episode_overs)
+        observations = next_observations
+    print("Warmup Finished.")
+    
+    print("Training")
     for step in tqdm(range(train_steps)):
 
             actions = agent.get_actions(observations)
@@ -32,12 +41,12 @@ def test(test_episodes, env, agent):
     total_rewards = []
     old_epsilon = agent.epsilon
     agent.epsilon = 0
+    successes = 0
 
     for episode in tqdm(range(test_episodes)):
 
         observation, info = env.reset()
         episode_reward = 0
-        successes = 0
         episode_over = False
 
         while not episode_over:
@@ -46,25 +55,25 @@ def test(test_episodes, env, agent):
             observation, reward, terminated, truncated, info = env.step(action)
             # env.render()
 
-            if reward > 200:
-                successes += 1
-
             episode_reward += reward
 
             episode_over = terminated or truncated
+
+        if episode_reward > 0:
+                successes += 1
             
         total_rewards.append(episode_reward)
 
     agent.epsilon = old_epsilon
 
-    success_rate = np.mean(np.array(total_rewards) > 200)
+    success_rate = np.mean(np.array(total_rewards) > 0)
     average_reward = np.mean(total_rewards)
 
     print("==============================================")
     print(f"Test results over {test_episodes} episodes :")
     print(f"Success Rate : {success_rate:.1%}")
     print(f"Fail Rate : {(1-success_rate):.1%}")
-    print(f"Successful Landings : {successes}")
+    print(f"Successes : {successes}")
     print(f"Unsuccessful Episodes : {test_episodes - successes}")
     print(f"Average Reward : {average_reward:.3f}")
     print("==============================================")

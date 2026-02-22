@@ -1,23 +1,29 @@
 import gymnasium as gym
 import ale_py
+from gymnasium.wrappers import AtariPreprocessing, FrameStackObservation
 import torch
 from agent import PongDDQNAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
 
-#Todo
-
 #Environment
 
-train_env = gym.make("ALE/Pong-v5")
-test_env = gym.make("ALE/Pong-v5")
+def make_env(id):
+    env = gym.make(id, frameskip=1)
+    env = AtariPreprocessing(env=env, frame_skip=4, screen_size=84, grayscale_obs=True, scale_obs=False) #Convert to (84, 84) Grayscale
+    env = FrameStackObservation(env=env, stack_size=4) #Stack 4 Frames
+
+    return env 
+
+train_env = make_env("ALE/Pong-v5")
+test_env = make_env("ALE/Pong-v5")
 
 #Parameters
 
-train_episodes = 1000
+train_episodes = 2000
 test_episodes = 10
-learning_rate = 0.001
+learning_rate = 0.0001
 initial_epsilon = 1
 final_epsilon = 0.01
 epsilon_decay = (initial_epsilon-final_epsilon)/(train_episodes)

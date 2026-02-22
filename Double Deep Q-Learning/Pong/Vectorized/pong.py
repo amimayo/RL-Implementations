@@ -1,27 +1,34 @@
 import gymnasium as gym
 import ale_py
+from gymnasium.wrappers import AtariPreprocessing, FrameStackObservation
 import torch
 from agent import PongDDQNAgent
 from train_test import train,test
 import numpy as np
 import matplotlib.pyplot as plt
 
-#Todo
-
 def main():
 
     #Environment
 
     num_envs = 8
-    train_env = gym.make_vec("ALE/Pong-v5",num_envs=num_envs,vectorization_mode="async")
-    test_env = gym.make("ALE/Pong-v5")
+
+    def make_env(id):
+            env = gym.make(id, frameskip=1)
+            env = AtariPreprocessing(env=env, frame_skip=4, screen_size=84, grayscale_obs=True, scale_obs=False) #Convert to (84, 84) Grayscale
+            env = FrameStackObservation(env=env, stack_size=4) #Stack 4 Frames
+
+            return env 
+
+    train_env = gym.vector.AsyncVectorEnv([lambda : make_env("ALE/Pong-v5") for _ in range(num_envs)])
+    test_env = make_env("ALE/Pong-v5")
 
     #Parameters
 
     train_steps = 300_000
     train_episodes = 1000
     test_episodes = 10
-    learning_rate = 0.0005
+    learning_rate = 0.0001
     initial_epsilon = 1
     final_epsilon = 0.01
     epsilon_decay = (initial_epsilon - final_epsilon)/(train_steps/2)
@@ -50,7 +57,7 @@ def main():
 
     #Training
     print("Training...")
-    trained_agent = train(train_steps=train_steps,env=train_env,agent=agent)
+    trained_agent = train(train_steps=train_steps,warmup_steps=warmup_steps,env=train_env,agent=agent)
     train_env.close()
 
     #Testing

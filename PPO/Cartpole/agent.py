@@ -51,10 +51,17 @@ class Buffer:
         del self.dones[:]
 
 
-class PPOAgent:
+class CartpolePPOAgent:
     def __init__(
-            self, env, learning_rate, gae_lambda, discount_factor, 
-            hidden_dims, batch_size, clip, device
+            self, 
+            env, 
+            learning_rate, 
+            gae_lambda, 
+            discount_factor, 
+            hidden_dims, 
+            batch_size, 
+            clip, 
+            device
     ):
         self.env = env
         self.device = device

@@ -47,8 +47,17 @@ class Buffer:
     def clear(self):
         self.__init__()
 
-class PPOAgent:
-    def __init__(self, env, learning_rate, gae_lambda, discount_factor, hidden_dims, batch_size, clip, device):
+class BipedalWalkerPPOAgent:
+    def __init__(self, 
+                 env, 
+                 learning_rate, 
+                 gae_lambda, 
+                 discount_factor, 
+                 hidden_dims, 
+                 batch_size, 
+                 clip, 
+                 device):
+        
         self.device = device
         self.batch_size = batch_size
         self.clip = clip

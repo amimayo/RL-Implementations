@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("FrozenLake-v1")
-test_env = gym.make("FrozenLake-v1",render_mode="human")
+test_env = gym.make("FrozenLake-v1",render_mode="rgb_array")
 
 #Parameters
 
@@ -40,6 +40,14 @@ train_env.close()
 
 
 #Testing
-print("Testing...")
-test(test_episodes=test_episodes,env=test_env,agent=trained_agent)
-test_env.close()
+# print("Testing...")
+# test(test_episodes=test_episodes,env=test_env,agent=trained_agent)
+# test_env.close()
+
+test(
+    test_episodes=test_episodes, 
+    env=test_env, 
+    agent=trained_agent, 
+    record=True, 
+    video_folder="../../assets" 
+)

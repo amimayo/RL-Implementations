@@ -1,6 +1,6 @@
 import gymnasium as gym
 import torch
-from agent import PPOAgent
+from agent import BipedalWalkerPPOAgent
 from train_test import train, test
 
 # Environment
@@ -23,7 +23,7 @@ epochs = 10
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env, buffer_length=train_episodes)
 
 # Bipedal-Walker PPO Agent
-agent = PPOAgent(
+agent = BipedalWalkerPPOAgent(
    env=train_env,
    learning_rate=learning_rate,
    gae_lambda=gae_lambda,

@@ -26,13 +26,13 @@ test_episodes = 10
 learning_rate = 0.0001
 initial_epsilon = 1
 final_epsilon = 0.01
-epsilon_decay = (initial_epsilon-final_epsilon)/(train_episodes)
+epsilon_decay = (initial_epsilon-final_epsilon)/(1_000_000)
 discount_factor = 0.99
-hidden_dims = 128
+hidden_dims = 512
 buffer_size = 100000
 batch_size = 64
 update_target_freq = 5000
-warmup_steps = 1000
+warmup_steps = 10000
 
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env,buffer_length=train_episodes)
 

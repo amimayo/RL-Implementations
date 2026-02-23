@@ -5,6 +5,8 @@ from tqdm import tqdm
 def train(train_episodes, env, agent,warmup_steps):
 
     observation,info = env.reset()
+
+    print("Warmup...") #Warmup
     while len(agent.buffer) < warmup_steps:
             action = env.action_space.sample()
             next_observation, reward, terminated, truncated, _ = env.step(action)
@@ -12,6 +14,9 @@ def train(train_episodes, env, agent,warmup_steps):
             agent.store_experience(observation, action, reward, next_observation, done)
             observation = next_observation if not done else env.reset()[0]
 
+    print("Warmup Finished.")
+    
+    print("Training")
 
     for episode in tqdm(range(train_episodes)):
 
@@ -32,8 +37,7 @@ def train(train_episodes, env, agent,warmup_steps):
 
             agent.update()
 
-
-        agent.e_decay()
+            agent.e_decay()
 
     return agent
 

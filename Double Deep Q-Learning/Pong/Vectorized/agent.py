@@ -6,7 +6,7 @@ import numpy as np
 
 class CNN(nn.Module):  #Input : (Batch, 4, 84, 84) (Grayscale)
 
-    def __init__(self, action_dims):
+    def __init__(self, action_dims, hidden_dims):
         super().__init__()
 
         self.feature_layers = nn.Sequential(
@@ -19,9 +19,9 @@ class CNN(nn.Module):  #Input : (Batch, 4, 84, 84) (Grayscale)
         )
 
         self.fc_layers = nn.Sequential(
-            nn.Linear(64*7*7, 512),
+            nn.Linear(64*7*7, hidden_dims),
             nn.ReLU(),
-            nn.Linear(512, action_dims)
+            nn.Linear(hidden_dims, action_dims)
         )
 
     def forward(self, x):
@@ -85,8 +85,8 @@ class PongDDQNAgent:
         self.action_dims = env.single_action_space.n
 
         self.buffer = ReplayBuffer(buffer_size)
-        self.qpolicy_network = CNN(self.action_dims).to(self.device)
-        self.target_network = CNN(self.action_dims).to(self.device)
+        self.qpolicy_network = CNN(self.action_dims, hidden_dims).to(self.device)
+        self.target_network = CNN(self.action_dims, hidden_dims).to(self.device)
         self.target_network.load_state_dict(self.qpolicy_network.state_dict())
         self.optimizer = torch.optim.Adam(params=self.qpolicy_network.parameters(),lr=learning_rate)
         self.target_network.eval()

@@ -95,7 +95,7 @@ Move into the directory of the specific algorithm you want to test.
 
 ```
 
-cd Soft-Actor-Critic/Ant
+cd PPO/BipedalWalker
 
 ```
 *Note: For `Deep-Q-Learning` and `Double-Deep-Q-Learning`, you will need to navigate one level deeper to choose between the sequential or parallelized environments (e.g., `cd Deep-Q-Learning/Acrobot/Unvectorized`).*

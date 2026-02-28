@@ -106,7 +106,7 @@ Execute the Python script to watch the trained agent interact with the environme
 
 ```
 
-python ant.py
+python bipedal_walker.py
 
 ```
 

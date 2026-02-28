@@ -13,15 +13,15 @@ def main():
 
     num_envs = 8
 
-    def make_env(id):
-            env = gym.make(id, frameskip=1)
+    def make_env(id, test=False):
+            env = gym.make(id, frameskip=1) if not test else gym.make(id, frameskip=1, render_mode="human")
             env = AtariPreprocessing(env=env, frame_skip=4, screen_size=84, grayscale_obs=True, scale_obs=False) #Convert to (84, 84) Grayscale
             env = FrameStackObservation(env=env, stack_size=4) #Stack 4 Frames
 
             return env 
 
     train_env = gym.vector.AsyncVectorEnv([lambda : make_env("ALE/Pong-v5") for _ in range(num_envs)])
-    test_env = make_env("ALE/Pong-v5")
+    test_env = make_env("ALE/Pong-v5", test=True)
 
     #Parameters
 

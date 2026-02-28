@@ -11,7 +11,7 @@ def main():
 
     num_envs = 8
     train_env = gym.make_vec("LunarLander-v3",num_envs=num_envs,vectorization_mode="async")
-    test_env = gym.make("LunarLander-v3")
+    test_env = gym.make("LunarLander-v3", render_mode="human")
 
     #Parameters
 

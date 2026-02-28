@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("LunarLander-v3")
-test_env = gym.make("LunarLander-v3")
+test_env = gym.make("LunarLander-v3", render_mode="human")
 
 #Parameters
 

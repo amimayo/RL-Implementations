@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 #Environment
 train_env = gym.make("Blackjack-v1", sab=False)
-test_env = gym.make("Blackjack-v1",natural=True, sab=True,render_mode="human")
+test_env = gym.make("Blackjack-v1", natural=True, sab=True, render_mode="human")
 
 #Parameters
 train_episodes = 10_000

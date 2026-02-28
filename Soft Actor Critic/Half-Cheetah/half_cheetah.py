@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("HalfCheetah-v5")
-test_env = gym.make("HalfCheetah-v5")
+test_env = gym.make("HalfCheetah-v5", render_mode="human")
 
 #Parameters
 

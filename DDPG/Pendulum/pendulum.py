@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("Pendulum-v1")
-test_env = gym.make("Pendulum-v1",render_mode="human")
+test_env = gym.make("Pendulum-v1", render_mode="human")
 
 #Parameters
 

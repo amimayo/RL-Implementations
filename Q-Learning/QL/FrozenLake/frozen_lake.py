@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #Environment
 
 train_env = gym.make("FrozenLake-v1")
-test_env = gym.make("FrozenLake-v1",render_mode="rgb_array")
+test_env = gym.make("FrozenLake-v1", render_mode="human")
 
 #Parameters
 

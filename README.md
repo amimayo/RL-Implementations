@@ -13,6 +13,7 @@ RL-Implementations features the implementation of various Reinforcement Learning
 ## 📁 File Structure
 
 ```
+
 RL-Implementations/
 ├── Q-Learning/                  # Off-Policy Tabular Model-Free RL
 │   ├── QL/                      # Classic Q-Table 
@@ -27,6 +28,8 @@ RL-Implementations/
 │   └── Vectorized/
 ├── PPO/                         # Proximal Policy Optimization (On-Policy Continuous)
 ├── DDPG/                        # Deep Deterministic Policy Gradient (Off-Policy Continuous)
+├── TD3/                         # Twin Delayed DDPG (Off-Policy Continuous)
+├── Soft-Actor-Critic/           # Maximum Entropy Actor Critic (Off-Policy Continuous)     
 ├── assets/                      # Evaluation test GIFs
 ├── LICENSE                      # MIT License
 └── README.md                    # Project Documentation
@@ -47,6 +50,8 @@ RL-Implementations/
 |  | Double DQN (DDQN) | `LunarLander-v3`, `ALE/Pong-v5` | Discrete (Visual/RAM) |
 | **Deep RL (Policy)** | Proximal Policy Optimization (PPO) | `BipedalWalker-v3`, `CartPole-v1` | Continuous / Discrete |
 |  | Deep Deterministic Policy Gradient (DDPG) | `Pendulum-v1`, `BipedalWalker-v3` | Continuous |
+|  | Twin Delayed DDPG (TD3) | `BipedalWalker-v3`, `Humanoid-v5` | Continuous |
+|  | Soft Actor-Critic (SAC) | `HalfCheetah-v5`, `Ant-v5` | Continuous |
 
 ---
 
@@ -63,14 +68,55 @@ RL-Implementations/
 | **ALE/Pong-v5** | Vectorized DDQN | Discrete (Visual Pixels) | ![Alt Text](./assets/pong_ddqn.gif) |
 | **Pendulum-v1** | DDPG | Continuous (3 Obs, 1 Act) | ![Alt Text](./assets/pendulum_ddpg.gif) |
 | **BipedalWalker-v3** | PPO | Continuous (24 Obs, 4 Act) | ![Alt Text](./assets/bipedal_ppo.gif) |
+| **Humanoid-v5** | TD3 | Continuous (376 Obs, 17 Act) | ![Alt Text](./assets/humanoid_td3.gif) |
+| **Ant-v5** | SAC | Continuous (27 Obs, 8 Act) | ![Alt Text](./assets/ant_sac.gif) |
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up the environment and run any of the RL agents locally.
+
+**1. Clone the repository and install dependencies** : 
+
+Ensure you have Python 3.10+ installed. Install the required libraries, including the MuJoCo and Gymnasium physics engines:
+
+```
+
+git clone https://github.com/amimayo/RL-Implementations.git
+cd RL-Implementations
+pip install -r requirements.txt
+
+```
+
+**2. Navigate to the desired algorithm and environment** :
+
+Move into the directory of the specific algorithm you want to test. 
+
+```
+
+cd Soft-Actor-Critic/Ant
+
+```
+*Note: For `Deep-Q-Learning` and `Double-Deep-Q-Learning`, you will need to navigate one level deeper to choose between the sequential or parallelized environments (e.g., `cd Deep-Q-Learning/Acrobot/Unvectorized`).*
+
+**3. Run the environment** :
+
+Execute the Python script to watch the trained agent interact with the environment.
+
+```
+
+python ant.py
+
+```
 
 ---
 
 ## 🛠️ To-Do List
 
 * [🟨] **Complete Simulation:** Run and verify full simulations for all remaining implementations
-* [🟨] **Soft Actor-Critic (SAC):** Implement Soft Actor-Critic for highly sample-efficient continuous control (targeting MuJoCo locomotion).
-* [🟨] **Monte Carlo Tree Search (MCTS):**  Implement a Model-Based RL Algorithm
+* [🟩] **Soft Actor-Critic (SAC):** Implement Soft Actor-Critic for highly sample-efficient continuous control (targeting MuJoCo locomotion).
+* [🟨] **Monte Carlo Tree Search (MCTS):** Implement a Model-Based RL Algorithm
 
 ---
 

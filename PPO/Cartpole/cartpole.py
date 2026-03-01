@@ -5,7 +5,7 @@ from train_test import train, test
 
 # Environment
 train_env = gym.make("CartPole-v1")
-test_env = gym.make("CartPole-v1", render_mode = "human")
+test_env = gym.make("CartPole-v1", render_mode="human")
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Parameters

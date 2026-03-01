@@ -17,11 +17,11 @@ test_episodes = 10
 actor_learning_rate = 0.0001
 critic_learning_rate = 0.001
 tau = 0.005
-exploration_noise = 0.2
+exploration_noise = 0.1
 discount_factor = 0.99
-hidden_dims = 256
+hidden_dims = 512
 buffer_size = 1000000
-batch_size = 256
+batch_size = 128
 warmup_steps = 10000
 
 train_env = gym.wrappers.RecordEpisodeStatistics(train_env,buffer_length=train_episodes)

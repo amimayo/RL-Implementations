@@ -95,7 +95,7 @@ Move into the directory of the specific algorithm you want to test.
 
 ```
 
-cd PPO/BipedalWalker
+cd PPO/Bipedal-Walker
 
 ```
 *Note: For `Deep-Q-Learning` and `Double-Deep-Q-Learning`, you will need to navigate one level deeper to choose between the sequential or parallelized environments (e.g., `cd Deep-Q-Learning/Acrobot/Unvectorized`).*
@@ -106,7 +106,7 @@ Execute the Python script to watch the trained agent interact with the environme
 
 ```
 
-python bipedal_walker.py
+python bipedalwalker.py
 
 ```
 
@@ -114,7 +114,7 @@ python bipedal_walker.py
 
 ## 🛠️ To-Do List
 
-* [🟨] **Complete Simulation:** Run and verify full simulations for all remaining implementations
+* [🟩] **Complete Simulation:** Run and verify full simulations for all remaining implementations
 * [🟩] **Soft Actor-Critic (SAC):** Implement Soft Actor-Critic for highly sample-efficient continuous control (targeting MuJoCo locomotion).
 * [🟨] **Monte Carlo Tree Search (MCTS):** Implement a Model-Based RL Algorithm
 

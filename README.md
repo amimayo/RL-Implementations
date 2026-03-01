@@ -32,6 +32,7 @@ RL-Implementations/
 ├── Soft-Actor-Critic/           # Maximum Entropy Actor Critic (Off-Policy Continuous)     
 ├── assets/                      # Evaluation test GIFs
 ├── LICENSE                      # MIT License
+├── requirements.txt             # Project Dependencies
 └── README.md                    # Project Documentation
 
 ```
